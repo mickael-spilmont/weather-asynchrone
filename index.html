@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Test ansync</title>
+        <script src="index.js" defer></script>
+    </head>
+
+    <body>
+        <h1>Weather</h1>
+
+        <form action="" method="GET" id="form">
+            <label for="firstTown">First town</label>
+            <input type="text" name="firstTown" id="firstTown" required>
+            <label for="secondTown">Second town</label>
+            <input type="text" name="secondTown" id="secondTown" required>
+            <p>Method : </p>
+            <div id="radio">
+                <label for="promise">Promise</label>
+                <input type="radio" name="method" value="promise" checked>
+                <label for="AsyncAwait">Async/Await</label>
+                <input type="radio" name="method" value="AsyncAwait">
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+
+        <div id="result"></div>
+    </body>
+</html>
