@@ -46,6 +46,7 @@ async function showResultsAsync(firstCity, secondCity) {
     }
 }
 
+// Print result on Html page
 function updateHtml(responses) {
     const result = document.getElementById("result");
     result.innerHTML = "";
