@@ -17,34 +17,51 @@ function getWeather(city) {
     });
 };
 
+// Function that processes requests using promise.all
+function showResultsPromise(firstCity, secondCity) {
+    console.log("Promise");
+    Promise.all([getWeather(firstCity), getWeather(secondCity)]).then(responses => {
+        updateHtml(responses);
+
+    }, error => {
+        console.log(`Error status : ${error}`);
+        document.getElementById("result").innerHTML = "An error has occurred !";
+    })
+}
+
 // Asynchrone function, show the results of two getWeather() with await
-async function showResultsAsync(firstCity, secondCity, result) {
+async function showResultsAsync(firstCity, secondCity) {
+    console.log("Async/Await");
     const responses = new Array();
 
     try {
         responses.push(await getWeather(firstCity));
         responses.push(await getWeather(secondCity));
-
-        for(element of responses) {
-            result.innerHTML += `
-                ${element.city_info.name} : 
-                ${element.current_condition.condition} ; 
-                ${element.current_condition.tmp}°<br>
-                `;
-        }
+        
+        updateHtml(responses);
 
     } catch(error) {
         console.log(`The request failed ${error}`);
-        result.innerHTML = "An error has occurred !";
+        document.getElementById("result").innerHTML = "An error has occurred !";
+    }
+}
+
+function updateHtml(responses) {
+    const result = document.getElementById("result");
+    result.innerHTML = "";
+
+    for(element of responses) {
+        result.innerHTML += `
+            ${element.city_info.name} : 
+            ${element.current_condition.condition} ; 
+            ${element.current_condition.tmp}°<br>
+            `;
     }
 }
 
 // Get formulary data on submit
 document.getElementById("form").addEventListener("submit", event => {
     event.preventDefault();
-
-    const result = document.getElementById("result");
-    result.innerHTML = "";
 
     const firstCity = document.getElementById("firstCity").value;
     const secondCity = document.getElementById("secondCity").value;
@@ -54,27 +71,6 @@ document.getElementById("form").addEventListener("submit", event => {
 
     const method = document.getElementsByName("method");
 
-    // if promised is checked, we use promise all to retrieve the results of the requests
-    if (method[0].checked) {
-        console.log("Promise");
-        Promise.all([getWeather(firstCity), getWeather(secondCity)]).then(responses => {
-
-            for(element of responses) {
-                result.innerHTML += `
-                    ${element.city_info.name} : 
-                    ${element.current_condition.condition} ; 
-                    ${element.current_condition.tmp}°<br>
-                    `;
-            }
-
-        }, error => {
-            console.log(`Error status : ${error}`);
-            result.innerHTML = "An error has occurred !";
-        })
-
-    // if async/await is checked, we use asynchrone function showResultsAsync() to retrieve the results of the requests
-    } else {
-        console.log("Async/Await");
-        showResultsAsync(firstCity, secondCity, result);
-    }
+    // Allow to use "promise" or "async/await" according to the choice of the user
+    method[0].checked ? showResultsPromise(firstCity, secondCity) : showResultsAsync(firstCity, secondCity);
 });
